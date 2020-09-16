@@ -16,10 +16,24 @@ Vue.use(Vuex)
 
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
-    modules: {
-      // example
+    state: {
+      stationData: [],
+      theme: {}
     },
-
+    mutations: {
+      insertRealTime(state, payload) {
+        const result = state.stationData.find(v => (v?.projectName === payload?.projectName) && (v?.stationName === payload?.stationName))
+        if (result) {
+          const index = state.stationData.indexOf(result)
+          state.stationData[index] = {
+            ...state.stationData[index],
+            ...payload
+          }
+        } else {
+          state.stationData?.push(payload)
+        }
+      }
+    },
     // enable strict mode (adds overhead!)
     // for dev mode only
     strict: process.env.DEV
