@@ -28,7 +28,7 @@
           <div>
             <Container @drop="onDrop(productIndex)">
               <Draggable v-for="(station, stationIndex) in product.stations" :key="stationIndex">
-                <div class="row justify-between draggable">
+                <div class="row justify-between draggable text-white" style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)">
                   {{ station.stationName || 'Untitled' }}
                   <q-btn-group>
                     <q-btn color="secondary" label="edit"  />

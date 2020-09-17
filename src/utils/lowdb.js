@@ -1,6 +1,6 @@
 import low from 'lowdb'
 import LocalStorage from 'lowdb/adapters/LocalStorage'
-import { range } from 'lodash'
+import { range, clone } from 'lodash'
 
 const adapter = new LocalStorage('db')
 const db = low(adapter)
@@ -54,7 +54,7 @@ export const setDB = (name, value) => {
   db.set(name, value).write()
 }
 
-export const getDB = name => db.get(name).value()
+export const getDB = name => clone(db.get(name).value())
 
 export const addDB = (name, value) => {
   db.get(name).unshift(value).write()
