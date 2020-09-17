@@ -4,35 +4,37 @@ import { getDB, addDB } from '../utils/lowdb'
 import bus from '../utils/bus'
 import { saveStation } from '../utils/mongodb'
 
-const projects = getDB('project')
+const project = getDB('project')
 
 let clients = []
 
 export const connectOPC = () => {
-  store().state.realTime = []
-  projects.forEach((project, projectIndex) => {
-    const projectName = project?.projectName
+  store().commit('insertRealTime', [])
+  project.forEach((product, projectIndex) => {
+    const productName = product.productName
 
-    project?.stations?.forEach(async (station, stationIndex) => {
-      if (!station?.url) return
-      const stationName = station?.stationName
+    if (!productName || !Array.isArray(product.stations)) return
 
-      store().commit('insertRealTIme', {
-        projectName,
+    product.stations.forEach(async (station, stationIndex) => {
+      const stationName = station.stationName
+
+      if (!station.url || !stationName || !Array.isArray(station.data)) return
+      store().commit('insertRealTime', {
+        productName,
         productId: '',
         stationName,
         state: false,
         data: [
-          ...station?.data?.map(
+          ...station.data.filter(v => v.dataName && v.nodeId).map(
             v => ({
-              dataName: v?.dataName,
+              dataName: v.dataName,
               dataValue: ''
             })
           )
         ]
       })
 
-      const url = `opc.tcp://${station?.url}`
+      const url = `opc.tcp://${station.url}`
       const options = {
         endpoint_must_exist: false
       }
@@ -57,7 +59,7 @@ export const connectOPC = () => {
           state = false
 
           const nodesToWrite = [{
-            nodeId: station?.pcState,
+            nodeId: station.pcState,
             attributedId: AttributeIds.Value,
             value: {
               value: {
@@ -76,7 +78,7 @@ export const connectOPC = () => {
             if (state !== currentState) {
               currentState = state
               store().commit('insertRealTime', {
-                projectName,
+                productName,
                 stationName,
                 state
               })
@@ -90,7 +92,7 @@ export const connectOPC = () => {
               addDB('log', {
                 logLevel,
                 stationName,
-                ip: station?.url || '',
+                ip: station.url || '',
                 message,
                 time: new Date()
               })
@@ -100,9 +102,9 @@ export const connectOPC = () => {
         }, 1500)
       })
 
-      opcUASubscribe(subscription, station?.done, async () => {
-        const productId = await dmcFormat(session, station?.dmc)
-        const result = (await session.readVariableValue(station?.result)).value.value
+      opcUASubscribe(subscription, station.done, async () => {
+        const productId = await dmcFormat(session, station.dmc)
+        const result = (await session.readVariableValue(station.result)).value.value
         if ((!productId && result)) return
 
         const stationData = await Promise.all(
@@ -116,7 +118,7 @@ export const connectOPC = () => {
         )
 
         saveStation({
-          projectName,
+          productName,
           stationName,
           productId,
           data: [
@@ -167,8 +169,8 @@ function opcUASubscribe(subscription, nodeId, callback) {
   )
 
   monitoredItem.on('changed', async (dataValue) => {
-    if (store().state.stationData.every(v => v?.state)) {
-      const data = dataValue?.value?.value
+    if (store().state.stationData.every(v => v.state)) {
+      const data = dataValue.value.value
       if (data) callback(data)
     }
   })

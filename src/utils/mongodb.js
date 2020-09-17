@@ -2,14 +2,15 @@ import { getDB } from './lowdb'
 import bus from '../utils/bus'
 import { range, random } from 'lodash'
 import { uid } from 'quasar'
-import { evaAward } from '@quasar/extras/eva-icons'
 
 const Mongod = require('mongod')
 const MongoClient = require('mongodb').MongoClient
 
 const server = new Mongod(27017)
 server.open((err) => {
-  console.log(err)
+  if (err) {
+    console.log(err)
+  }
 })
 
 const { url, dbName } = getDB('databaseInfo')
@@ -25,20 +26,21 @@ export const mongodbConnect = () => {
     } else {
       db = client.db(dbName)
       bus.$emit('mongodb', true)
-      const p = ['A/C', 'CSD', 'DSD']
+
+      /*const p = ['A/C', 'CSD', 'DSD']
       const data = range(3).map(nnn => ({
         dataName: `data${nnn + 1}`,
         dataValue: nnn + 1
       }))
 
-      /*range(1000).forEach((n) => {
+      range(1000).forEach((n) => {
         const productId = uid()
-        const projectName = p[random(0, 2)]
+        const productName = p[random(0, 2)]
         range(3).forEach(nn => {
           const stationName = `station${nn}`
 
           saveStation({
-            projectName,
+            productName,
             stationName,
             productId,
             data
@@ -52,17 +54,16 @@ export const mongodbConnect = () => {
 
 export const getMongoDB = () => db
 
-export const getCollection = () => db?.collection('station')
+export const getCollection = (collectionName) => db?.collection(collectionName)
 
-export const saveStation = async ({ projectName, stationName, productId, data }) => {
+export const saveStation = async ({ productName, stationName, productId, data }) => {
 
     if (!data?.every(v => v.hasOwnProperty('dataName') && v.hasOwnProperty('dataValue'))) return
 
-    const collection = db?.collection('station')
+    const collection = db?.collection(productName)
 
     try {
       const document = await collection.findOne({
-        projectName,
         stationName,
         productId
       })
@@ -71,7 +72,6 @@ export const saveStation = async ({ projectName, stationName, productId, data })
 
       if (document) {
         await collection.updateOne({
-          projectName,
           stationName,
           productId
         }, {
@@ -94,7 +94,6 @@ export const saveStation = async ({ projectName, stationName, productId, data })
         }
         await collection?.insertOne({
           id,
-          projectName,
           stationName,
           productId,
           data,
@@ -104,7 +103,7 @@ export const saveStation = async ({ projectName, stationName, productId, data })
 
       }
 
-      bus.$emit('historyUpdate', projectName)
+      bus.$emit('historyUpdate', productName)
     } catch (e) {
       console.error(e)
     }

@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { clone } from 'lodash'
+import { laGofore } from '@quasar/extras/line-awesome'
 
 // import example from './module-example'
 
@@ -22,7 +24,13 @@ export default function (/* { ssrContext } */) {
     },
     mutations: {
       insertRealTime(state, payload) {
-        const result = state.stationData.find(v => (v?.projectName === payload?.projectName) && (v?.stationName === payload?.stationName))
+
+        /*if (Array.isArray(payload) && payload.length === 0) {
+          state.stationData = []
+          return
+        }*/
+
+        const result = state.stationData.find(v => (v.productName === payload.productName) && (v.stationName === payload.stationName))
         if (result) {
           const index = state.stationData.indexOf(result)
           state.stationData[index] = {
@@ -30,12 +38,11 @@ export default function (/* { ssrContext } */) {
             ...payload
           }
         } else {
-          state.stationData?.push(payload)
+          state.stationData.push(payload)
         }
+
       }
     },
-    // enable strict mode (adds overhead!)
-    // for dev mode only
     strict: process.env.DEV
   })
 

@@ -3,7 +3,7 @@
     <div class="row">
       <q-select outlined v-model="project" :options="projects" label="project" />
       <q-input outlined v-model="barcode" label="barcode" />
-      <v-md-date-range-picker />
+      <q-date v-model="searchDate" range />
     </div>
   </div>
 </template>
@@ -22,7 +22,8 @@ export default {
     projects: [
       'A/C', 'CSD', 'DSD'
     ],
-    barcode: ''
+    barcode: '',
+    searchDate: null
   }),
   mounted () {
     const collection = getCollection()

@@ -17,10 +17,7 @@
 <script>
 export default {
   name: 'stationModal',
-  props: ['station'],
-  data: () => ({
-    visible: true
-  }),
+  props: ['station', 'visible'],
   computed: {
     stationInfo() {
       return Object.entries(this.station)

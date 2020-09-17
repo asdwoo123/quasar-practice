@@ -4,11 +4,10 @@
   </div>
 </template>
 <script>
-import Mongod from 'mongod'
 import MainLayout from 'layouts/MainLayout'
 import { mongodbConnect } from './utils/mongodb'
+import { connectOPC } from './utils/opcua'
 import bus from './utils/bus'
-const server = new Mongod(27017)
 
 export default {
   name: 'App',
@@ -19,6 +18,7 @@ export default {
   mounted () {
     bus.$on('mongodb', (state) => this.mongoState = state)
     mongodbConnect()
+    connectOPC()
   }
 }
 </script>

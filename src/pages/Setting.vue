@@ -5,7 +5,7 @@
         <q-btn color="secondary" glossy label="ADD PRODUCT" @click="addProduct"/>
         <q-btn color="secondary" glossy label="SAVE"/>
         <q-btn color="secondary" glossy label="RESET"/>
-        <q-btn color="secondary" glossy label="CHANGE PASSWORD"/>
+        <q-btn color="secondary" glossy label="CHANGE PASSWORD" @click="passwordChangeVisible = true" />
       </q-btn-group>
     </div>
     <div class="row">
@@ -31,8 +31,8 @@
                 <div class="row justify-between draggable">
                   {{ station.stationName || 'Untitled' }}
                   <q-btn-group>
-                    <q-btn color="secondary" label="edit" />
-                    <q-btn color="secondary" label="delete" />
+                    <q-btn color="secondary" label="edit"  />
+                    <q-btn color="secondary" label="delete"  />
                   </q-btn-group>
                 </div>
               </Draggable>
@@ -41,7 +41,8 @@
         </q-card-section>
       </q-card>
     </div>
-    <StationModal :station="station" />
+    <StationModal :station="station" :visible="stationEditVisible" />
+    <PasswordChangeModal :visible="passwordChangeVisible" />
   </div>
 </template>
 
@@ -52,10 +53,13 @@ import { getDB } from '../utils/lowdb'
 import stationStruct from '../struct/station'
 import productStruct from '../struct/product'
 import StationModal from 'components/stationModal'
+import PasswordChangeModal from 'components/passwordChangeModal'
+import bus from '../utils/bus'
 
 export default {
   name: 'Setting',
   components: {
+    PasswordChangeModal,
     StationModal,
     Container,
     Draggable
@@ -63,7 +67,10 @@ export default {
   data: () => ({
     items: range(5),
     project: getDB('project'),
-    station: clone(stationStruct)
+    station: clone(stationStruct),
+    projectSaveVisible: false,
+    passwordChangeVisible: false,
+    stationEditVisible: false
   }),
   methods: {
     onDrop (productIndex, d) {
@@ -76,6 +83,13 @@ export default {
       this.project[productIndex].stations.push(stationStruct)
       this.$forceUpdate()
     }
+  },
+  mounted () {
+    bus.$on('modal-all-close', () => {
+      this.projectSaveVisible = false
+      this.passwordChangeVisible = false
+      this.stationEditVisible = false
+    })
   }
 }
 </script>
