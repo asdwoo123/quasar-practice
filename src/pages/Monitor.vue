@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <q-page class="row">
 
     <q-list bordered padding class="rounded-borders text-primary">
       <template v-for="(productName, index) in productNames">
@@ -41,7 +41,7 @@
 
       </div>
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script>

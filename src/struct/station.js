@@ -8,6 +8,8 @@ export default {
   data: [{
     dataName: '',
     nodeId: '',
+    monitor: true,
+    save: true,
     standard: {
       maximum: '',
       minimum: '',
@@ -15,3 +17,4 @@ export default {
     }
   }]
 }
+

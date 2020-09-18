@@ -54,7 +54,7 @@ export const mongodbConnect = () => {
 
 export const getMongoDB = () => db
 
-export const getCollection = (collectionName) => db?.collection(collectionName)
+export const getCollection = (collectionName) => db.collection(collectionName)
 
 export const saveStation = async ({ productName, stationName, productId, data }) => {
 

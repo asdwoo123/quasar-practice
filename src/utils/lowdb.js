@@ -25,8 +25,7 @@ db.defaults({
   theme,
   log
 }).write()
-/*
-db.set('project', ['A/C', 'CSD', 'DSD'].map((s, ii) => ({
+/*db.set('project', ['A/C', 'CSD', 'DSD'].map((s, ii) => ({
   productName: s,
   stations: range(1, 4).map(i => ({
     stationName: 'station' + i,
@@ -41,10 +40,12 @@ db.set('project', ['A/C', 'CSD', 'DSD'].map((s, ii) => ({
     data: range(1, 2).map(d => ({
       nodeId: `ns=1;s=light${d}`,
       dataName: 'signal' + d,
+      monitor: true,
+      save: true,
       standard: {
-        maximum: '',
-        minimum: '3',
-        same: ''
+        maximum: 0,
+        minimum: 3,
+        same: 1
       }
     }))
   }))

@@ -1,10 +1,10 @@
 <template>
-<div>
+<q-page>
   <q-table :data="logs" :columns="columns" :pagination.sync="pagination" hide-pagination />
   <div>
     <q-pagination :max="4" v-model="pagination.page" color="grey-8" />
   </div>
-</div>
+</q-page>
 </template>
 
 <script>

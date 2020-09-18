@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh Lpr fFf" class="bg-grey-1">
+    <q-header elevated >-
       <q-toolbar>
         <img width="100" src="~assets/seojuneng-logo.png" alt="logo"/>
         <q-space/>
@@ -10,10 +10,8 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container style="background-color: #a9cec2;">
-      <q-page padding>
+    <q-page-container>
         <router-view/>
-      </q-page>
     </q-page-container>
   </q-layout>
 </template>
