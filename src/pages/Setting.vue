@@ -63,7 +63,7 @@
           </div>
           <div class="col bg-amber-1">
 
-            <div class="row q-gutter-sm items-center" v-for="data in station.data" :key="data.dataName">
+            <div style="margin-bottom: 8px;" class="row q-gutter-sm items-center" v-for="data in station.data" :key="data.dataName">
               <q-input outlined v-model="data.dataName" label="Data name"  >
                 <template v-slot:append>
                   <q-icon name="close" @click="data.dataName = ''" class="cursor-pointer" />
@@ -90,6 +90,7 @@
             <q-fab
               icon="add"
               color="accent"
+              @click="addStationData"
             />
           </q-page-sticky>
         </q-card-section>
@@ -135,6 +136,20 @@ export default {
         this.station = clone(this.project[productIndex].stations[stationIndex])
         this.stationEditVisible = true
       }
+    },
+    addStationData() {
+      this.station.data.push({
+        dataName: '',
+        nodeId: '',
+        monitor: true,
+        save: true,
+        standard: {
+          maximum: '',
+          minimum: '',
+          same: ''
+        }
+      })
+      this.$forceUpdate()
     }
   }
 }
